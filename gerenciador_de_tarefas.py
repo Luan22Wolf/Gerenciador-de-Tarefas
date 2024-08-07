@@ -20,24 +20,46 @@ def menu():
 
 def finalizar_app():
     print("Aplicativo encerrado")
+    
 
 def voltar_ao_menu():
-    input("\nDigite qualquer tecla para voltar ao menu: ")
+    input("\nDigite qualquer tecla para voltar ao menu ")
     main()
 
 def subtitulo(texto):
     os.system("cls")
     linha = "*" * len(texto)
     print(linha)
-    input(texto)
+    print(texto)
     print(linha)
     print()
+
+def tarefa_nao_encontrada(retonar_funcao):#USA UMA FUNÇÃO DE RETORNO
+    while True:
+        opcao_escolhida = input("""Deseja continuar: 
+    1- CONTINUAR
+    2- VOLTAR AO MENU
+    3- SAIR DO APP      
+          """)
+        
+        match opcao_escolhida:
+            case "1":
+                retonar_funcao()
+            case "2":
+                main()
+            case "3":
+                finalizar_app() #ESTA APRESENTANDO ERRO AO FINZALIZAR, VOLTANDO PARA A FUNÇÃO voltar_ao_menu()
+            case _:
+                print("Opção inválida, tente novamente!")
+
+    
 
 def adicionar_tarefas():
     subtitulo("ADICIONAR UMA TAREFA")
     adicionarTarefa = input("Digite a tarefa que deseja adicionar: ")
     dados_gerenciador = {"nome":adicionarTarefa,"status": False}
     lista_de_tarefas.append(dados_gerenciador)
+    print("Tarefa adicionada com sucesso")
     voltar_ao_menu()
 
 def alterar_nome_tarefa():
@@ -51,7 +73,7 @@ def alterar_nome_tarefa():
             novo_nome_da_tarefa = input("Informe o nome atualizado da tarefa: ")
             lista_de_tarefas[i]["nome"] = novo_nome_da_tarefa
             print("Nome alterado com sucesso!")
-            break
+            
 
         if not tarefa_encontrada:
             print("Tarefa não encontrada!")
@@ -64,11 +86,15 @@ def status_da_tarefa():
 
     for tarefa in lista_de_tarefas:
         if nome_tarefa == tarefa["nome"]:
-            tarefa_encontrada =True
+            tarefa_encontrada = True
             tarefa["status"] = not tarefa["status"]
             mensagem = f"Tarefa realizada" if tarefa["status"] else "Não realizada"
             print(mensagem)
-        voltar_ao_menu()
+            break
+    if not tarefa_encontrada:
+        print("Tarefa não encontrada!")
+        tarefa_nao_encontrada(status_da_tarefa)
+    voltar_ao_menu()
     
 def listar_tarefas():
     subtitulo("LISTANDO TAREFAS")
@@ -82,10 +108,14 @@ def listar_tarefas():
 def remover_tarefa():
     subtitulo("REMOVER TAREFAS")
     remover = input("Digite a tarefa que deseja excluir:  ")
+    tarefa_encontrada = False
     for tarefa in lista_de_tarefas:
         if tarefa["nome"] == remover:
+            tarefa_encontrada = True
             lista_de_tarefas.remove(tarefa)
             break
+    if not tarefa_encontrada:
+        print("Tarefa não encontrada")
     voltar_ao_menu()
 
 def escolher_opcao():
